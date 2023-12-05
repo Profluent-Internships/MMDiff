@@ -1,0 +1,41 @@
+# general diffusion arguments
+ddpm_mode: se3_unconditional # [se3_unconditional]
+diffusion_network: se3_score # [se3_score]
+dynamics_network: framediff # [framediff]
+eval_epochs: 10
+
+# SE(3) diffusion arguments
+diffuse_rotations: true
+diffuse_translations: true
+min_timestep: 0.01
+num_timesteps: 100
+
+# R(3) diffusion arguments
+r3:
+  min_b: 0.1
+  max_b: 20.0
+  coordinate_scaling: 0.1
+
+# SO(3) diffusion arguments
+so3:
+  num_omega: 1000
+  num_sigma: 1000
+  min_sigma: 0.1
+  max_sigma: 1.5
+  schedule: logarithmic
+  cache_dir: .cache/
+  use_cached_score: false
+
+# sequence diffusion arguments
+diffuse_sequence: true
+num_sequence_timesteps: ${.num_timesteps}
+sequence_noise_schedule: sqrt # note: must be a value in [`linear`, `cosine`, `sqrt`]
+sequence_sample_distribution: normal # note: if value is not `normal`, then, instead of a Gaussian distribution, a Gaussian mixture model (GMM) is used as the sequence noising function
+sequence_sample_distribution_gmm_means: [-1.0, 1.0]
+sequence_sample_distribution_gmm_variances: [1.0, 1.0]
+
+# sampling arguments
+sampling:
+  sequence_noise_scale: 1.0
+  structure_noise_scale: 1.0
+  apply_na_consensus_sampling: false

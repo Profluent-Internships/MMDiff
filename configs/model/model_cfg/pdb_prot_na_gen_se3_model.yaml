@@ -1,0 +1,67 @@
+node_input_dim: 1
+edge_input_dim: 2
+existing_edge_embedding_dim: 0
+
+node_hidden_dim: 256
+edge_hidden_dim: 128
+num_layers: 5
+dropout: 0.0
+
+c_skip: 64
+num_angles: ${subtract:${resolve_variable:src.data.components.pdb.complex_constants.NUM_PROT_NA_TORSIONS},2} # note: must be `1` for protein design tasks and `8` for either nucleic acid or protein-nucleic acid design tasks
+
+clip_gradients: false
+log_grad_flow_steps: 3000 # after how many steps to log gradient flow
+
+embedding:
+  index_embedding_size: 128
+  max_relative_idx: 32
+  max_relative_chain: 2
+  use_chain_relative: true
+  molecule_type_embedding_size: 4
+  molecule_type_embedded_size: 128
+  embed_molecule_type_conditioning: True
+  embed_self_conditioning: True
+  num_bins: 22
+  min_bin: 1e-5
+  max_bin: 20.0
+
+ipa:
+  c_s: ${..node_hidden_dim}
+  c_z: ${..edge_hidden_dim}
+  c_hidden: 256
+  c_resnet: 128
+  num_resnet_blocks: 2
+  num_heads: 8
+  num_qk_points: 8
+  num_v_points: 12
+  coordinate_scaling: ${...diffusion_cfg.r3.coordinate_scaling}
+  inf: 1e5
+  epsilon: 1e-8
+
+tfmr:
+  num_heads: 4
+  num_layers: 2
+
+loss_cfg:
+  trans_loss_weight: 1.0
+  rot_loss_weight: 0.5
+  rot_loss_t_threshold: 0.2
+  separate_rot_loss: False
+  trans_x0_threshold: 1.0
+  bb_atom_loss_weight: 1.0
+  bb_atom_loss_t_filter: 0.25
+  dist_mat_loss_weight: 1.0
+  dist_mat_loss_t_filter: 0.25
+  interface_dist_mat_loss_weight: 1.0 # note: will only be used if `${model.model_cfg.loss_cfg.supervise_torsion_angles}` is `true`
+  interface_dist_mat_loss_t_filter: 0.25 # note: will only be used if `${model.model_cfg.loss_cfg.supervise_interfaces}` is `true`
+  aux_loss_weight: 0.25
+  torsion_loss_weight: 1.0 # note: will only be used if `${model.model_cfg.loss_cfg.supervise_torsion_angles}` is `true`
+  torsion_loss_t_filter: 0.25 # note: will only be used if `${model.model_cfg.loss_cfg.supervise_torsion_angles}` is `true`
+  torsion_norm_loss_weight: 0.02 # note: will only be used if `${model.model_cfg.loss_cfg.supervise_torsion_angles}` is `true`
+  cce_seq_loss_weight: 1.0 # note: will only be used if `${model.diffusion_cfg.diffuse_sequence}` is `true`
+  kl_seq_loss_weight: 0.25 # note: will only be used if `${model.diffusion_cfg.diffuse_sequence}` is `true`
+  supervise_n1_atom_positions: true # note: if `true`, for pyrimidine residues will instead supervise predicted N9 atom positions using ground-truth N1 atom positions
+  supervise_interfaces: true # note: if `true`, will supervise the model's predicted pairwise distances specifically for interfacing residues
+  supervise_torsion_angles: false # note: if `false`, will supervise the model's predicted torsion angles indirectly using predicted coordinates
+  coordinate_scaling: ${...diffusion_cfg.r3.coordinate_scaling}

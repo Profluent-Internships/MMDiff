@@ -1,0 +1,88 @@
+# @package _global_
+
+defaults:
+  - _self_
+  - data: pdb_na.yaml # choose datamodule with `predict_dataloader()` for inference
+  - model: pdb_prot_na_gen_se3_module.yaml
+  - logger: null
+  - trainer: default.yaml
+  - paths: default.yaml
+  - extras: default.yaml
+  - hydra: default.yaml
+
+task_name: "sample"
+
+tags: ["dev"]
+
+# passing checkpoint path is necessary for sampling
+ckpt_path: checkpoints/na_only_sequence_structure_model_51d3f5f38c0c4354af562b8cfac3e486_epoch_127.ckpt
+
+# establishing inference arguments
+inference:
+  name: na_only_sequence_structure_se3_discrete_diffusion_sampling_${now:%Y-%m-%d}_${now:%H:%M:%S}
+  seed: 123
+  run_statified_eval: false # note: if `true`, will instead use the `validation` dataset's range of examples for sampling evaluation; if `false`, (large) multi-state PDB trajectories will be recorded
+  filter_eval_split: false # note: if `true`, will use `samples.min/max_length` and `samples.min/max_num_chains` to filter out examples from the evaluation dataset
+  # whether to compute evaluation metrics for generated samples e.g., using RoseTTAFold2NA
+  # warning: `self_consistency` and `novelty` will be time and memory-intensive metrics to compute
+  run_self_consistency_eval: false
+  run_diversity_eval: false
+  run_novelty_eval: false
+  use_rf2na_single_sequence_mode: true # note: trades prediction accuracy for time complexity
+  generate_protein_sequences_using_pmpnn: false # note: should only be `true` if generating protein-only samples and instead using ProteinMPNN for backbone sequence design
+  measure_auxiliary_na_metrics: false # note: should only be `true` if generating nucleic acid-only samples
+
+  # output directory for samples
+  output_dir: ./inference_outputs/
+
+  diffusion:
+    # number of diffusion steps for sampling
+    num_t: 500
+    # note: analogous to sampling temperature
+    sequence_noise_scale: 1.0
+    structure_noise_scale: 0.1
+    # final diffusion step `t` for sampling
+    min_t: 0.01
+    # whether to apply a 50% majority rule that transforms all generated nucleotide residue types to be exclusively of DNA or RNA types
+    apply_na_consensus_sampling: true
+    # whether to employ a random diffusion baseline for sequence-structure generation
+    employ_random_baseline: false
+    # note: the following are for overriding sequence diffusion arguments
+    diffuse_sequence: true
+    num_sequence_timesteps: ${.num_t}
+    sequence_noise_schedule: sqrt # note: must be a value in [`linear`, `cosine`, `sqrt`], where `linear` typically yields the best looking structures; `cosine` often yields the most designable structures; and `sqrt` is what is used during training
+    sequence_sample_distribution: normal # note: if value is not `normal`, then, instead of a Gaussian distribution, a Gaussian mixture model (GMM) is used as the sequence noising function
+    sequence_sample_distribution_gmm_means: [-1.0, 1.0]
+    sequence_sample_distribution_gmm_variances: [1.0, 1.0]
+
+  samples:
+    # number of backbone structures and sequences to sample and score per sequence length
+    samples_per_length: 30
+    # minimum sequence length to sample
+    min_length: 90
+    # maximum sequence length to sample
+    max_length: 100
+    # note: `num_length_steps` will only be used if `inference.run_statified_eval` is `true`
+    num_length_steps: 10
+    # note: `min_num_chains` will only be used if `inference.run_statified_eval` is `true`
+    min_num_chains: 1
+    # note: `max_num_chains` will only be used if `inference.run_statified_eval` is `true`
+    max_num_chains: 4
+    # gap between lengths to sample
+    # (note: this script will sample all lengths
+    # in range(min_length, max_length, length_step))
+    length_step: 10
+    # a syntactic specification mapping the standardized molecule types
+    # (`A`: amino acid, `N`: nucleic acid) to each residue index;
+    # note: the sum of each string's residue index annotations must sum to the
+    # current length specified by the interval [`min_length`, `max_length`, `length_step`]:
+    # e.g., `residue_molecule_type_mappings: ['N:100', 'A:75,N:75']`
+    residue_molecule_type_mappings: ["N:90", "N:100"]
+    # residue_molecule_type_mappings: ["N:90", "N:40,A:60"]  # e.g., for protein-nucleic acid generation
+    # a syntactic specification mapping to each residue index
+    # one of the PDB's 62 alphanumeric chain identifiers:
+    # (i.e., one of `ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789`);
+    # note: the sum of each string's residue index annotations must sum to the
+    # current length specified by the interval [`min_length`, `max_length`, `length_step`]:
+    # e.g., `residue_chain_mappings: ['a:50,b:50', 'a:75,b:75']`
+    residue_chain_mappings: ["a:30,b:30,c:30", "a:20,b:20,c:60"]

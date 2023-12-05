@@ -1,0 +1,40 @@
+_target_: src.data.pdb_na_datamodule.PDBNADataModule
+data_cfg:
+  # CSV for path and metadata to training examples
+  csv_path: ${paths.data_dir}/PDB-NA/processed/metadata.csv
+  annot_path: ${paths.root_dir}/metadata/PDB_NA_Dataset.csv
+  cluster_path: ${paths.data_dir}/PDB-NA/processed/clusters-by-entity-30.txt
+  cluster_examples_by_structure: true # Note: Corresponds to using qTMclust structure-based clustering to select training examples
+  qtmclust_exec_path: ${paths.qtmclust_exec_path}
+  filtering:
+    max_len: 768
+    min_len: 10
+    # Select a subset of examples, which could be useful for debugging
+    subset: null
+    mmcif_allowed_oligomer: [monomeric] # Note: Corresponds to filtering complexes originating from mmCIF files
+    pdb_allowed_oligomer: null # Note: Corresponds to filtering complexes originating from PDB files
+    max_helix_percent: 1.0
+    max_loop_percent: 0.5
+    min_beta_percent: -1.0
+    rog_quantile: 0.96
+    # Specify which types of molecules to keep in the dataset
+    allowed_molecule_types: [protein, na] # Note: Value must be in `[[protein, na], [protein], [na], null]`
+    # As a cross-validation holdout, remove examples containing proteins belonging to a subset of Pfam protein families
+    holdout: null
+  min_t: ${model.diffusion_cfg.min_timestep}
+  samples_per_eval_length: 4
+  num_eval_lengths: 10
+  num_t: ${model.diffusion_cfg.num_timesteps}
+  max_squared_res: 600000
+  batch_size: 256
+  eval_batch_size: ${.samples_per_eval_length}
+  sample_mode: time_batch # Note: Must be in [`time_batch`, `length_batch`, `cluster_time_batch`, `cluster_length_batch`]
+  num_workers: 5
+  prefetch_factor: 100
+  # Sequence diffusion arguments
+  diffuse_sequence: ${model.diffusion_cfg.diffuse_sequence}
+  num_sequence_t: ${model.diffusion_cfg.num_sequence_timesteps}
+  sequence_noise_schedule: ${model.diffusion_cfg.sequence_noise_schedule} # note: must be a value in [`linear`, `cosine`, `sqrt`]
+  sequence_sample_distribution: ${model.diffusion_cfg.sequence_sample_distribution} # note: if value is not `normal`, then, instead of a Gaussian distribution, a Gaussian mixture model (GMM) is used as the sequence noising function
+  sequence_sample_distribution_gmm_means: ${model.diffusion_cfg.sequence_sample_distribution_gmm_means}
+  sequence_sample_distribution_gmm_variances: ${model.diffusion_cfg.sequence_sample_distribution_gmm_variances}

@@ -1,0 +1,3 @@
+na_metadata_csv_path: ${paths.data_dir}/PDB-NA/processed_pdb/na_metadata.csv
+protein_metadata_csv_path: ${paths.data_dir}/PDB-NA/processed_pdb/protein_metadata.csv
+metadata_output_csv_path: ${paths.data_dir}/PDB-NA/processed_pdb/metadata.csv

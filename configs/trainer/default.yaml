@@ -1,0 +1,40 @@
+_target_: lightning.pytorch.trainer.Trainer
+
+default_root_dir: ${paths.output_dir}
+
+min_epochs: 1 # prevents early stopping
+max_epochs: 10
+
+accelerator: gpu
+devices: 1
+
+# mixed precision for extra speed-up
+# precision: 16
+
+# number of sanity-check validation forward passes to run prior to model training
+num_sanity_val_steps: 0
+
+# perform a validation loop every N training epochs
+check_val_every_n_epoch: null
+val_check_interval: 10000
+# note: when `check_val_every_n_epoch` is `null`,
+# Lightning will require you to provide an integer
+# value for `val_check_interval` to instead perform a
+# validation epoch every `val_check_interval` steps
+
+# gradient accumulation to simulate larger-than-GPU-memory batch sizes
+accumulate_grad_batches: 1
+
+# set True to to ensure deterministic results
+# makes training slower but gives more reproducibility than just setting seeds
+deterministic: False
+
+# track and log the vector norm of each gradient
+# track_grad_norm: 2.0
+
+# profile code comprehensively
+profiler:
+  # _target_: pytorch_lightning.profilers.PyTorchProfiler
+
+# inform Lightning that we will be supplying a custom `Sampler` in our `DataModule` class
+use_distributed_sampler: False

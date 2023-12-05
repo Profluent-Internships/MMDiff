@@ -1,0 +1,17 @@
+_target_: src.models.pdb_prot_na_gen_se3_module.PDBProtNAGenSE3LitModule
+
+optimizer:
+  _target_: torch.optim.Adam
+  _partial_: true
+  lr: 0.0001
+
+scheduler:
+#   _target_: torch.optim.lr_scheduler.ReduceLROnPlateau
+#   _partial_: true
+#   mode: min
+#   factor: 0.1
+#   patience: 10
+
+defaults:
+  - model_cfg: pdb_prot_na_gen_se3_model.yaml
+  - diffusion_cfg: pdb_prot_na_gen_se3_ddpm.yaml
