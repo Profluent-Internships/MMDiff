@@ -1,6 +1,6 @@
 <div align="center">
 
-# Joint Sequence-Structure Generation of Nucleic Acid and Protein Complexes with SE(3)-Discrete Diffusion
+# Towards Joint Sequence-Structure Generation of Nucleic Acid and Protein Complexes with SE(3)-Discrete Diffusion
 
 <a href="https://pytorch.org/get-started/locally/"><img alt="PyTorch" src="https://img.shields.io/badge/PyTorch-ee4c2c?logo=pytorch&logoColor=white"></a>
 <a href="https://pytorchlightning.ai/"><img alt="Lightning" src="https://img.shields.io/badge/-Lightning-792ee5?logo=pytorchlightning&logoColor=white"></a>
@@ -12,7 +12,7 @@
 
 ## Description
 
-Official PyTorch implementation of "Joint Sequence-Structure Generation of Nucleic Acid and Protein Complexes with SE(3)-Discrete Diffusion".
+Official PyTorch implementation of "Towards Joint Sequence-Structure Generation of Nucleic Acid and Protein Complexes with SE(3)-Discrete Diffusion".
 
 <div align="center">
 
@@ -402,9 +402,11 @@ We thank all their contributors and maintainers!
 If you use the code or data associated with this package or otherwise find such work useful, please cite:
 
 ```bibtex
-@article{morehead2023mmdiff,
-  title={Joint Sequence-Structure Generation of Nucleic Acid and Protein Complexes with SE(3)-Discrete Diffusion},
-  author={Morehead, Alex and Ruffolo, Jeffrey, and Bhatnagar, Aadyot and Madani, Ali},
+@inproceedings{
+  morehead2023towards,
+  title={Towards Joint Sequence-Structure Generation of Nucleic Acid and Protein Complexes},
+  author={Morehead, Alex and Bhatnagar, Aadyot and Ruffolo, Jeffrey A. and Madani, Ali},
+  booktitle={NeurIPS Machine Learning for Structural Biology Workshop},
   year={2023}
 }
 ```
