@@ -5,9 +5,9 @@ from setuptools import find_packages, setup
 setup(
     name="MMDiff",
     version="0.0.1",
-    description="SE(3) Diffusion for design of protein-nucleic acid complexes",
-    author="",
-    author_email="amorehead@profluent.bio",
+    description="Official PyTorch implementation of 'Joint Sequence-Structure Generation of Nucleic Acid and Protein Complexes with SE(3)-Discrete Diffusion'.",
+    author="Alex Morehead",
+    author_email="alex.morehead@gmail.com",
     url="https://github.com/Profluent-Internships/MMDiff",
     install_requires=["lightning", "hydra-core"],
     packages=find_packages(),
