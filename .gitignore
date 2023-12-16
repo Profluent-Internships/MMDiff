@@ -144,7 +144,7 @@ dmypy.json
 *.tar
 *.tar.gz
 
-# pdb_na_se3_diffusion
+# MMDiff
 configs/local/default.yaml
 .env
 *.pdb
@@ -155,7 +155,8 @@ generations/
 *_outputs*/
 logs/
 scripts/
-checkpoints/*local*/
+checkpoints/*
+!checkpoints/.gitkeep
 !metadata/
 
 # RoseTTAFold2NA
@@ -182,7 +183,7 @@ forks/RoseTTAFold2NA/**/*db*
 mlruns/
 
 # Conda/Mamba
-pdb-na-se3-diffusion*/
+MMDiff*/
 
 # Hydra
 .hydra

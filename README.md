@@ -71,9 +71,9 @@ Download pre-trained checkpoints
 
 ```bash
 # fetch and extract model checkpoints directory
-wget https://zenodo.org/record/8247932/files/MMDiff_Checkpoints.tar.gz
-tar -xzf MMDiff_Checkpoints.tar.gz
-rm MMDiff_Checkpoints.tar.gz
+wget https://zenodo.org/record/8247932/files/MMDiff_Release_Checkpoints.tar.gz
+tar -xzf MMDiff_Release_Checkpoints.tar.gz -C checkpoints
+rm MMDiff_Release_Checkpoints.tar.gz
 ```
 
 Install US-align and qTMclust to cluster generated structures
@@ -331,23 +331,23 @@ respectively:
 
 ```bash
 # protein-only sampling and evaluation
-python src/sample.py inference.name='protein_only_sequence_structure_se3_discrete_diffusion_stratified_eval_${now:%Y-%m-%d}_${now:%H-%M-%S}' inference.seed=123 inference.run_statified_eval=true inference.filter_eval_split=true inference.run_self_consistency_eval=true inference.run_diversity_eval=true inference.run_novelty_eval=true inference.output_dir=\'./inference_eval_outputs/\' inference.samples.min_length=10 inference.samples.max_length=120 inference.samples.num_length_steps=10 inference.samples.min_num_chains=1 inference.samples.max_num_chains=4 paths.usalign_exec_path=$HOME/Programs/USalign/USalign paths.qtmclust_exec_path=$HOME/Programs/USalign/qTMclust data.data_cfg.filtering.mmcif_allowed_oligomer=[notype] data.data_cfg.filtering.allowed_molecule_types=[protein] ckpt_path=checkpoints/protein_na_sequence_structure_model_c4dddeef121c4ff0969f8e50ea442ab7_no_monomers_with_torsion_sup_epoch_78.ckpt
+python src/sample.py inference.name='protein_only_sequence_structure_se3_discrete_diffusion_stratified_eval_${now:%Y-%m-%d}_${now:%H-%M-%S}' inference.seed=123 inference.run_statified_eval=true inference.filter_eval_split=true inference.run_self_consistency_eval=true inference.run_diversity_eval=true inference.run_novelty_eval=true inference.output_dir=\'./inference_eval_outputs/\' inference.samples.min_length=10 inference.samples.max_length=120 inference.samples.num_length_steps=10 inference.samples.min_num_chains=1 inference.samples.max_num_chains=4 paths.usalign_exec_path=$HOME/Programs/USalign/USalign paths.qtmclust_exec_path=$HOME/Programs/USalign/qTMclust data.data_cfg.filtering.mmcif_allowed_oligomer=[notype] data.data_cfg.filtering.allowed_molecule_types=[protein] ckpt_path=checkpoints/protein_na_sequence_structure_g42jpyug_rotations_epoch_286.ckpt
 ```
 
 ```bash
 # nucleic acid-only sampling and evaluation
-python src/sample.py inference.name='na_only_sequence_structure_se3_discrete_diffusion_stratified_eval_${now:%Y-%m-%d}_${now:%H-%M-%S}' inference.seed=456 inference.run_statified_eval=true inference.filter_eval_split=true inference.run_self_consistency_eval=true inference.run_diversity_eval=true inference.run_novelty_eval=true inference.output_dir=\'./inference_eval_outputs/\' inference.samples.min_length=10 inference.samples.max_length=120 inference.samples.num_length_steps=10 inference.samples.min_num_chains=1 inference.samples.max_num_chains=4 paths.usalign_exec_path=$HOME/Programs/USalign/USalign paths.qtmclust_exec_path=$HOME/Programs/USalign/qTMclust data.data_cfg.filtering.mmcif_allowed_oligomer=[notype] data.data_cfg.filtering.allowed_molecule_types=[na] inference.measure_auxiliary_na_metrics=true ckpt_path=checkpoints/na_only_sequence_structure_model_51d3f5f38c0c4354af562b8cfac3e486_epoch_127.ckpt
+python src/sample.py inference.name='na_only_sequence_structure_se3_discrete_diffusion_stratified_eval_${now:%Y-%m-%d}_${now:%H-%M-%S}' inference.seed=456 inference.run_statified_eval=true inference.filter_eval_split=true inference.run_self_consistency_eval=true inference.run_diversity_eval=true inference.run_novelty_eval=true inference.output_dir=\'./inference_eval_outputs/\' inference.samples.min_length=10 inference.samples.max_length=120 inference.samples.num_length_steps=10 inference.samples.min_num_chains=1 inference.samples.max_num_chains=4 paths.usalign_exec_path=$HOME/Programs/USalign/USalign paths.qtmclust_exec_path=$HOME/Programs/USalign/qTMclust data.data_cfg.filtering.mmcif_allowed_oligomer=[notype] data.data_cfg.filtering.allowed_molecule_types=[na] inference.measure_auxiliary_na_metrics=true ckpt_path=checkpoints/protein_na_sequence_structure_g42jpyug_rotations_epoch_286.ckpt
 ```
 
 ```bash
 # protein-nucleic acid sampling and evaluation
-python src/sample.py inference.name='protein_na_sequence_structure_se3_discrete_diffusion_stratified_eval_${now:%Y-%m-%d}_${now:%H-%M-%S}' inference.seed=789 inference.run_statified_eval=true inference.filter_eval_split=true inference.run_self_consistency_eval=true inference.run_diversity_eval=true inference.run_novelty_eval=true inference.output_dir=\'./inference_eval_outputs/\' inference.samples.min_length=10 inference.samples.max_length=120 inference.samples.num_length_steps=10 inference.samples.min_num_chains=1 inference.samples.max_num_chains=4 paths.usalign_exec_path=$HOME/Programs/USalign/USalign paths.qtmclust_exec_path=$HOME/Programs/USalign/qTMclust data.data_cfg.filtering.mmcif_allowed_oligomer=[notype] data.data_cfg.filtering.allowed_molecule_types=[protein,na] ckpt_path=checkpoints/protein_na_sequence_structure_model_c4dddeef121c4ff0969f8e50ea442ab7_no_monomers_with_torsion_sup_epoch_78.ckpt
+python src/sample.py inference.name='protein_na_sequence_structure_se3_discrete_diffusion_stratified_eval_${now:%Y-%m-%d}_${now:%H-%M-%S}' inference.seed=789 inference.run_statified_eval=true inference.filter_eval_split=true inference.run_self_consistency_eval=true inference.run_diversity_eval=true inference.run_novelty_eval=true inference.output_dir=\'./inference_eval_outputs/\' inference.samples.min_length=10 inference.samples.max_length=120 inference.samples.num_length_steps=10 inference.samples.min_num_chains=1 inference.samples.max_num_chains=4 paths.usalign_exec_path=$HOME/Programs/USalign/USalign paths.qtmclust_exec_path=$HOME/Programs/USalign/qTMclust data.data_cfg.filtering.mmcif_allowed_oligomer=[notype] data.data_cfg.filtering.allowed_molecule_types=[protein,na] ckpt_path=checkpoints/protein_na_sequence_structure_g42jpyug_rotations_epoch_286.ckpt
 ```
 
 The config for inference is in `configs/sample.yaml`.
 See the config for different inference options.
 By default, inference will use the model weights
-`checkpoints/na_only_sequence_structure_model_51d3f5f38c0c4354af562b8cfac3e486_epoch_127.ckpt`
+`checkpoints/protein_na_sequence_structure_g42jpyug_rotations_epoch_286.ckpt`
 for nucleic acid joint generation of sequence and structure.
 Simply change the `ckpt_path` to use your custom weights
 (e.g., for structure-only generation) as desired.
