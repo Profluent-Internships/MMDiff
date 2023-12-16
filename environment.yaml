@@ -1,4 +1,4 @@
-name: pdb-na-se3-diffusion
+name: MMDiff
 channels:
   - pyg
   - bioconda
