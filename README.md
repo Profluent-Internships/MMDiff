@@ -404,7 +404,7 @@ If you use the code or data associated with this package or otherwise find such 
 ```bibtex
 @inproceedings{
   morehead2023towards,
-  title={Towards Joint Sequence-Structure Generation of Nucleic Acid and Protein Complexes},
+  title={Towards Joint Sequence-Structure Generation of Nucleic Acid and Protein Complexes with SE(3)-Discrete Diffusion},
   author={Morehead, Alex and Bhatnagar, Aadyot and Ruffolo, Jeffrey A. and Madani, Ali},
   booktitle={NeurIPS Machine Learning for Structural Biology Workshop},
   year={2023}
