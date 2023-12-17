@@ -73,17 +73,18 @@ inference:
     # in range(min_length, max_length, length_step))
     length_step: 10
     # a syntactic specification mapping the standardized molecule types
-    # (`A`: amino acid, `N`: nucleic acid) to each residue index;
+    # (`A`: amino acid, `D`: deoxyribonucleic acid, `R`: ribonucleic acid) to each residue index;
     # note: the sum of each string's residue index annotations must sum to the
     # current length specified by the interval [`min_length`, `max_length`, `length_step`]:
-    # e.g., `residue_molecule_type_mappings: ['N:100', 'A:75,N:75']`
+    # e.g., `residue_molecule_type_mappings: ['R:100', 'A:75,D:75']`
     residue_molecule_type_mappings:
-      ["N:10", "N:20", "N:30", "N:40", "A:40,N:10"]
-    # residue_molecule_type_mappings: ["N:90", "N:40,A:60"]  # e.g., for protein-nucleic acid generation
+      ["R:10", "D:20", "R:10,D:20", "R:20,R:20", "A:40,R:10"]
+    # residue_molecule_type_mappings: ["R:90", "R:40,A:60"]  # e.g., for protein-nucleic acid generation
     # a syntactic specification mapping to each residue index
     # one of the PDB's 62 alphanumeric chain identifiers:
     # (i.e., one of `ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789`);
     # note: the sum of each string's residue index annotations must sum to the
     # current length specified by the interval [`min_length`, `max_length`, `length_step`]:
-    # e.g., `residue_chain_mappings: ['a:50,b:50', 'a:75,b:75']`
-    residue_chain_mappings: ["a:10", "a:20", "a:30", "a:40", "a:40,b:10"]
+    # e.g., `residue_chain_mappings: ['a:50,b:40', 'a:50,b:50']`
+    residue_chain_mappings:
+      ["a:10", "a:20", "a:10,b:20", "a:20,b:20", "a:40,b:10"]
