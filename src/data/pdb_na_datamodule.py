@@ -31,7 +31,7 @@ class PDBNADataModule(LightningDataModule):
         predict_max_length: int = 100,
         predict_length_step: int = 10,
         predict_samples_per_length: int = 30,
-        predict_residue_molecule_type_mappings: List[str] = ["N:90", "N:40,A:60"],
+        predict_residue_molecule_type_mappings: List[str] = ["R:90", "D:40,A:60"],
         predict_residue_chain_mappings: List[str] = ["a:30,b:30,c:30", "a:20,b:20,c:60"],
     ):
         super().__init__()
@@ -140,7 +140,7 @@ class PDBNADataModule(LightningDataModule):
                 residue_chain_mappings=self.hparams.inference_cfg.samples.residue_chain_mappings,
                 eval_dataset=eval_dataset,
             )
-            if not self.data_train:
+            if not self.data_train and self.hparams.inference_cfg.run_novelty_eval:
                 # ensure the training dataset is constructed to evaluate the novelty of each generated (i.e., predicted) sample
                 self.data_train = PDBNADataset(
                     self.hparams.data_cfg,

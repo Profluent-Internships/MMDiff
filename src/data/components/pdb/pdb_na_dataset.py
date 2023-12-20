@@ -46,7 +46,7 @@ NUM_PROTEIN_ONEHOT_AATYPE_CLASSES = complex_constants.protein_restype_num
 NUM_NA_ONEHOT_AATYPE_CLASSES = complex_constants.na_restype_num
 NUM_PROTEIN_NA_ONEHOT_AATYPE_CLASSES = complex_constants.protein_na_restype_num
 
-MOLECULE_TYPE_INDEX_MAPPING = {"A": 0, "N": 1}
+MOLECULE_TYPE_INDEX_MAPPING = {"A": 0, "D": 1, "R": 2}
 
 log = utils.get_pylogger(__name__)
 
@@ -1136,7 +1136,9 @@ class SamplingDataset(Dataset):
                         "sample_length": length,
                         "sample_length_index": sample_length_index,
                         "sample_chain_idx": sample_chain_idx,
-                        "sample_molecule_type_encoding": sample_molecule_type_encoding,
+                        "sample_molecule_type_encoding": sample_molecule_type_encoding.astype(
+                            np.float32
+                        ),
                         "sample_is_protein_residue_mask": sample_is_protein_residue_mask,
                         "sample_is_na_residue_mask": sample_is_na_residue_mask,
                         "sample_asym_id": sample_asym_id,
@@ -1181,7 +1183,7 @@ class SamplingDataset(Dataset):
             molecule_type, molecule_type_residue_count = mapping_items
             assert (
                 molecule_type in molecule_type_index_mapping
-            ), "Allowed molecule types are amino acids (`A`) and nucleic acids (`N`)."
+            ), "Allowed molecule types are amino acids (`A`), deoxyribonucleic acids (`D`), and ribonucleic acids (`R`)."
             assert is_integer(
                 molecule_type_residue_count
             ), "Residue count must be specified as an integer value."
@@ -1189,7 +1191,7 @@ class SamplingDataset(Dataset):
             molecule_type_residue_count = int(molecule_type_residue_count)
             encodings_ = []
             for _ in range(molecule_type_residue_count):
-                encoding = [0, 0, 0]
+                encoding = [0, 0, 0, 0]
                 encoding[molecule_type_index] = 1
                 encodings_.append(encoding)
             encodings.append(encodings_)
@@ -1206,7 +1208,7 @@ class SamplingDataset(Dataset):
     ) -> Tuple[np.ndarray, np.ndarray]:
         return (
             molecule_type_encoding[:, 0] == 1,
-            molecule_type_encoding[:, 1] == 1,
+            np.logical_or(molecule_type_encoding[:, 1] == 1, molecule_type_encoding[:, 2] == 1),
         )
 
     @staticmethod
