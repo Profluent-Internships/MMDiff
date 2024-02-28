@@ -12,7 +12,7 @@
 
 ## Description
 
-Official PyTorch implementation of "Towards Joint Sequence-Structure Generation of Nucleic Acid and Protein Complexes with SE(3)-Discrete Diffusion".
+Official PyTorch implementation of [Towards Joint Sequence-Structure Generation of Nucleic Acid and Protein Complexes with SE(3)-Discrete Diffusion](https://arxiv.org/abs/2401.06151).
 
 <div align="center">
 
