@@ -59,7 +59,7 @@ cd MMDiff
 
 # create conda environment
 mamba env create -f environment.yaml
-conda activate pdb-na-se3-diffusion  # note: one still needs to use `conda` to (de)activate environments
+conda activate MMDiff  # note: one still needs to use `conda` to (de)activate environments
 
 # install local project as package
 pip3 install -e .
