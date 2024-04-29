@@ -919,6 +919,7 @@ class PDBProtNAGenSE3LitModule(LightningModule):
                 sequence_noise_scale=self.hparams.diffusion_cfg.sampling.sequence_noise_scale,
                 structure_noise_scale=self.hparams.diffusion_cfg.sampling.structure_noise_scale,
                 apply_na_consensus_sampling=self.hparams.diffusion_cfg.sampling.apply_na_consensus_sampling,
+                force_na_seq_type=self.hparams.diffusion_cfg.sampling.force_na_seq_type,
             )
             if sampling_outputs_list is None or not len(sampling_outputs_list):
                 # signal that sampling with the current batch has failed
@@ -1039,6 +1040,7 @@ class PDBProtNAGenSE3LitModule(LightningModule):
             sequence_noise_scale=self.hparams.diffusion_cfg.sampling.sequence_noise_scale,
             structure_noise_scale=self.hparams.diffusion_cfg.sampling.structure_noise_scale,
             apply_na_consensus_sampling=self.hparams.diffusion_cfg.sampling.apply_na_consensus_sampling,
+            force_na_seq_type=self.hparams.diffusion_cfg.sampling.force_na_seq_type,
         )
         # collect outputs
         step_outputs = getattr(self, f"{self.test_phase}_step_outputs")
@@ -1161,6 +1163,7 @@ class PDBProtNAGenSE3LitModule(LightningModule):
                 structure_noise_scale=self.hparams.inference_cfg.diffusion.structure_noise_scale,
                 apply_na_consensus_sampling=self.hparams.inference_cfg.diffusion.apply_na_consensus_sampling,
                 employ_random_baseline=self.hparams.inference_cfg.diffusion.employ_random_baseline,
+                force_na_seq_type=self.hparams.inference_cfg.diffusion.force_na_seq_type,
             )
             if sampling_output is None:
                 return
@@ -1279,6 +1282,7 @@ class PDBProtNAGenSE3LitModule(LightningModule):
         seq_pred: Optional[torch.Tensor] = None,
         is_na_residue_mask: Optional[torch.Tensor] = None,
         consensus_threshold: float = 0.5,
+        force_na_seq_type: Optional[str] = None,
     ) -> Union[BATCH_TYPE, torch.Tensor]:
         # e.g., apply a 50% majority rule that transforms all generated
         # nucleotide residue types to be exclusively of DNA or RNA types
@@ -1286,7 +1290,7 @@ class PDBProtNAGenSE3LitModule(LightningModule):
             node_types = batch["onehot_node_types"].argmax(-1)
             node_deoxy = batch["is_na_residue_mask"] & (node_types >= 21) & (node_types <= 24)
             node_deoxy_ratio = (node_deoxy.sum() / batch["is_na_residue_mask"].sum()).item()
-            if node_deoxy_ratio >= consensus_threshold:
+            if (node_deoxy_ratio >= consensus_threshold or (force_na_seq_type is not None and force_na_seq_type == "DNA")) and not (force_na_seq_type is not None and force_na_seq_type == "RNA"):
                 batch["onehot_node_types"][
                     ...,
                     NUM_PROTEIN_ONEHOT_AATYPE_CLASSES + 4 : NUM_PROTEIN_ONEHOT_AATYPE_CLASSES + 8,
@@ -1307,7 +1311,7 @@ class PDBProtNAGenSE3LitModule(LightningModule):
             node_types = seq_pred.argmax(-1)
             node_deoxy = is_na_residue_mask & (node_types >= 21) & (node_types <= 24)
             node_deoxy_ratio = (node_deoxy.sum() / is_na_residue_mask.sum()).item()
-            if node_deoxy_ratio >= consensus_threshold:
+            if (node_deoxy_ratio >= consensus_threshold or (force_na_seq_type is not None and force_na_seq_type == "DNA")) and not (force_na_seq_type is not None and force_na_seq_type == "RNA"):
                 seq_pred[
                     ...,
                     NUM_PROTEIN_ONEHOT_AATYPE_CLASSES + 4 : NUM_PROTEIN_ONEHOT_AATYPE_CLASSES + 8,
@@ -1337,6 +1341,7 @@ class PDBProtNAGenSE3LitModule(LightningModule):
         structure_noise_scale: float = 1.0,
         apply_na_consensus_sampling: bool = False,
         employ_random_baseline: bool = False,
+        force_na_seq_type: Optional[str] = None,
     ) -> Optional[Dict[str, Any]]:
         # prepare arguments for the reverse process
         sample_batch = copy.deepcopy(batch)
@@ -1448,6 +1453,7 @@ class PDBProtNAGenSE3LitModule(LightningModule):
                             sample_batch = self.enforce_na_consensus_sampling(
                                 min_na_logit_value=(min_na_onehot_node_types_logit - 0.1),
                                 batch=sample_batch,
+                                force_na_seq_type=force_na_seq_type,
                             )
                     # update feature dependencies after guarding against out-of-vocabulary token assignments
                     sample_batch["node_types"] = sample_batch["onehot_node_types"].argmax(-1)
@@ -1526,6 +1532,7 @@ class PDBProtNAGenSE3LitModule(LightningModule):
                             sample_batch = self.enforce_na_consensus_sampling(
                                 min_na_logit_value=(min_na_onehot_node_types_logit - 0.1),
                                 batch=sample_batch,
+                                force_na_seq_type=force_na_seq_type,
                             )
                     # update feature dependencies after guarding against out-of-vocabulary token assignments
                     sample_batch["node_types"] = sample_batch["onehot_node_types"].argmax(-1)
@@ -1594,6 +1601,7 @@ class PDBProtNAGenSE3LitModule(LightningModule):
                                 min_na_logit_value=(min_na_seq_pred_logit - 0.1),
                                 seq_pred=seq_pred,
                                 is_na_residue_mask=is_na_residue_mask.to(device),
+                                force_na_seq_type=force_na_seq_type,
                             )
 
                     all_mol_seqs.append(detach_tensor_to_np(seq_pred.argmax(-1)))
@@ -1816,6 +1824,7 @@ class PDBProtNAGenSE3LitModule(LightningModule):
         sequence_noise_scale: float = 1.0,
         structure_noise_scale: float = 1.0,
         apply_na_consensus_sampling: bool = False,
+        force_na_seq_type: Optional[str] = None,
     ) -> Optional[List[Dict[str, Any]]]:
         # collect inputs
         batch = self.standardize_batch_features(batch)
@@ -1846,6 +1855,7 @@ class PDBProtNAGenSE3LitModule(LightningModule):
             sequence_noise_scale=sequence_noise_scale,
             structure_noise_scale=structure_noise_scale,
             apply_na_consensus_sampling=apply_na_consensus_sampling,
+            force_na_seq_type=force_na_seq_type,
         )
         if sampling_output is None:
             return
