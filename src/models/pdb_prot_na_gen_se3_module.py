@@ -1290,7 +1290,10 @@ class PDBProtNAGenSE3LitModule(LightningModule):
             node_types = batch["onehot_node_types"].argmax(-1)
             node_deoxy = batch["is_na_residue_mask"] & (node_types >= 21) & (node_types <= 24)
             node_deoxy_ratio = (node_deoxy.sum() / batch["is_na_residue_mask"].sum()).item()
-            if (node_deoxy_ratio >= consensus_threshold or (force_na_seq_type is not None and force_na_seq_type == "DNA")) and not (force_na_seq_type is not None and force_na_seq_type == "RNA"):
+            if (
+                node_deoxy_ratio >= consensus_threshold
+                or (force_na_seq_type is not None and force_na_seq_type == "DNA")
+            ) and not (force_na_seq_type is not None and force_na_seq_type == "RNA"):
                 batch["onehot_node_types"][
                     ...,
                     NUM_PROTEIN_ONEHOT_AATYPE_CLASSES + 4 : NUM_PROTEIN_ONEHOT_AATYPE_CLASSES + 8,
@@ -1311,7 +1314,10 @@ class PDBProtNAGenSE3LitModule(LightningModule):
             node_types = seq_pred.argmax(-1)
             node_deoxy = is_na_residue_mask & (node_types >= 21) & (node_types <= 24)
             node_deoxy_ratio = (node_deoxy.sum() / is_na_residue_mask.sum()).item()
-            if (node_deoxy_ratio >= consensus_threshold or (force_na_seq_type is not None and force_na_seq_type == "DNA")) and not (force_na_seq_type is not None and force_na_seq_type == "RNA"):
+            if (
+                node_deoxy_ratio >= consensus_threshold
+                or (force_na_seq_type is not None and force_na_seq_type == "DNA")
+            ) and not (force_na_seq_type is not None and force_na_seq_type == "RNA"):
                 seq_pred[
                     ...,
                     NUM_PROTEIN_ONEHOT_AATYPE_CLASSES + 4 : NUM_PROTEIN_ONEHOT_AATYPE_CLASSES + 8,
