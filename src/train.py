@@ -58,6 +58,12 @@ def train(cfg: DictConfig) -> Tuple[dict, dict]:
     if cfg.get("seed"):
         L.seed_everything(cfg.seed, workers=True)
 
+    if cfg.model.diffusion_cfg.sampling.force_na_seq_type is not None:
+        assert (
+            cfg.model.diffusion_cfg.sampling.force_na_seq_type
+            in ["DNA", "RNA"]
+        ), "The argument `force_na_seq_type` must be one of ['DNA', 'RNA']."
+
     log.info(f"Instantiating datamodule <{cfg.data._target_}>")
     datamodule: LightningDataModule = hydra.utils.instantiate(cfg.data)
 
