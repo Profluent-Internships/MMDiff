@@ -39,3 +39,4 @@ sampling:
   sequence_noise_scale: 1.0
   structure_noise_scale: 1.0
   apply_na_consensus_sampling: false
+  force_na_seq_type: null # if not `null`, will force all generated nucleotide residue types to be exclusively of either `DNA` or `RNA` types
