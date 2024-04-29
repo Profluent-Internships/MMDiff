@@ -45,6 +45,7 @@ inference:
     min_t: 0.01
     # whether to apply a 50% majority rule that transforms all generated nucleotide residue types to be exclusively of DNA or RNA types
     apply_na_consensus_sampling: true
+    force_na_seq_type: null # if not `null`, will force all generated nucleotide residue types to be exclusively of either `DNA` or `RNA` types
     # whether to employ a random diffusion baseline for sequence-structure generation
     employ_random_baseline: false
     # note: the following are for overriding sequence diffusion arguments
