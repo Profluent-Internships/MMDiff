@@ -348,7 +348,7 @@ The config for inference is in `configs/sample.yaml`.
 See the config for different inference options.
 By default, inference will use the model weights
 `checkpoints/protein_na_sequence_structure_g42jpyug_rotations_epoch_286.ckpt`
-for nucleic acid joint generation of sequence and structure.
+for protein-nucleic acid joint generation of sequence and structure.
 Simply change the `ckpt_path` to use your custom weights
 (e.g., for structure-only generation) as desired.
 
