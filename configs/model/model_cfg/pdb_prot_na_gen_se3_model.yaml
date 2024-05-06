@@ -53,7 +53,7 @@ loss_cfg:
   bb_atom_loss_t_filter: 0.25
   dist_mat_loss_weight: 1.0
   dist_mat_loss_t_filter: 0.25
-  interface_dist_mat_loss_weight: 1.0 # note: will only be used if `${model.model_cfg.loss_cfg.supervise_torsion_angles}` is `true`
+  interface_dist_mat_loss_weight: 1.0 # note: will only be used if `${model.model_cfg.loss_cfg.supervise_interfaces}` is `true`
   interface_dist_mat_loss_t_filter: 0.25 # note: will only be used if `${model.model_cfg.loss_cfg.supervise_interfaces}` is `true`
   aux_loss_weight: 0.25
   torsion_loss_weight: 1.0 # note: will only be used if `${model.model_cfg.loss_cfg.supervise_torsion_angles}` is `true`
